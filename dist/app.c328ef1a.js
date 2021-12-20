@@ -118,44 +118,74 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.js":[function(require,module,exports) {
-var ajax = new XMLHttpRequest(); // 데이터를 열기
-// 메소드, URL, async(동기, 비동기 여부) : false는 동기로 가져온다는 의미
-
-ajax.open('GET', 'https://api.hnpwa.com/v0/news/1.json', false); // 데이터 가져오기
-
-ajax.send(); // 데이터 응답 여부 확인
-// console.log(ajax.response);
-// 우리가 할 일은 들어온 데이터를 처리해 출력결과를 만들기에요.
-// 여기까지 가져오기는 성공했어요. 이제 출력을 해봐야 해요.
-// response의 데이터를 객체형식으로 변환하기 (JSON이기에 가능해요!)
-
-var newsFeed = JSON.parse(ajax.response); // 객체 타입여부 확인하기
-// console.log(newsFeed)
-// root Id를 가진 div에 문자열 넣기 (하드코딩)
-// document.getElementById('root').innerHTML =`<ul>
-//   <li>${newsFeed[0].title}</li>
-//   <li>${newsFeed[1].title}</li>
-//   <li>${newsFeed[2].title}</li>
-// </ul>`
-// 반복해보기 앗! 이러면 오버라이팅이 되네요.
+// const containter = document.getElementById('root');
+// const ajax = new XMLHttpRequest();
+// const content = document.createElement('div');
+// const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
+// const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
+// ajax.open('GET', NEWS_URL, false);
+// ajax.send();
+// const newsFeed = JSON.parse(ajax.response);
+// const ul = document.createElement('ul');
+// window.addEventListener('hashchange', function() {
+//   const id = location.hash.substr(1);
+//   ajax.open('GET', CONTENT_URL.replace('@id', id), false);
+//   ajax.send();
+//   const newsContent = JSON.parse(ajax.response);
+//   const title = document.createElement('h1');
+//   title.innerHTML = newsContent.title;
+//   content.appendChild(title);
+//   console.log(newsContent);
+// });
 // for (let i = 0; i < 10; i++) {
-// document.getElementById('root').innerHTML =`<ul>
-//   <li>${newsFeed[i].title}</li>
-// </ul>`
+//   const li = document.createElement('li');
+//   const a = document.createElement('a');
+//   a.href = `#${newsFeed[i].id}`;
+//   a.innerHTML = `${newsFeed[i].title} (${newsFeed[i].comments_count})`;
+//   li.appendChild(a);
+//   ul.appendChild(li);
 // }
-// 오버라이팅 안되게 한 번 해볼까요?
-// ul 태그를 하나 만들어요.
-
+// containter.appendChild(ul);
+// containter.appendChild(content);
+var ajax = new XMLHttpRequest();
+var NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
+var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
+ajax.open('GET', NEWS_URL, false);
+ajax.send();
+var newsFeed = JSON.parse(ajax.response);
 var ul = document.createElement('ul');
+window.addEventListener('hashchange', function () {
+  var id = location.hash.substr(1);
+  ajax.open('GET', CONTENT_URL.replace('@id', id), false);
+  ajax.send();
+  var newsContent = JSON.parse(ajax.response);
+  console.log(newsContent);
+});
 
 for (var i = 0; i < 10; i++) {
+  var a = document.createElement('a');
   var li = document.createElement('li');
-  li.innerHTML = newsFeed[i].title;
+  a.innerHTML = "".concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")");
+  a.href = "#".concat(newsFeed[i].id);
+  li.appendChild(a);
   ul.appendChild(li);
-} // root 아래 ul을 넣었어요.
+}
 
-
-document.getElementById('root').appendChild(ul);
+document.querySelector('#root').appendChild(ul); // const ajax = new XMLHttpRequest();
+// const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
+// ajax.open('GET', NEWS_URL, false);
+// ajax.send();
+// const newsFeed = JSON.parse(ajax.response);
+// const ul = document.createElement('ul');
+// for (let i = 0; i < 10; i++) {
+//   const a = document.createElement('a');
+//   const li = document.createElement('li');
+//   a.innerHTML = `${newsFeed[i].title} (${newsFeed[i].comments_count})`;
+//   a.href = '#';
+//   li.appendChild(a);
+//   ul.appendChild(li);
+// }
+// document.querySelector('#root').appendChild(ul);
 },{}],"../../../../opt/homebrew/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -184,7 +214,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53187" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50051" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
