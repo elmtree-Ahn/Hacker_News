@@ -118,65 +118,56 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 
   return newRequire;
 })({"app.js":[function(require,module,exports) {
-var containter = document.getElementById('root');
-var ajax = new XMLHttpRequest();
-var content = document.createElement('div');
-var NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
-var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
-
-function getData(url) {
-  ajax.open('GET', url, false);
-  ajax.send();
-  return JSON.parse(ajax.response);
-}
-
-var newsFeed = getData(NEWS_URL);
-var ul = document.createElement('ul');
-window.addEventListener('hashchange', function () {
-  var id = location.hash.substr(1);
-  var newsContent = getData(CONTENT_URL.replace('@id', id));
-  var title = document.createElement('h1');
-  title.innerHTML = newsContent.title;
-  content.appendChild(title);
-});
-
-for (var i = 0; i < 10; i++) {
-  var div = document.createElement('div');
-  div.innerHTML = "\n    <li>\n      <a href=\"#".concat(newsFeed[i].id, "\">\n        ").concat(newsFeed[i].title, " (").concat(newsFeed[i].comments_count, ")\n      </a>\n    </li>\n  ");
-  ul.appendChild(div.firstElementChild);
-}
-
-containter.appendChild(ul);
-containter.appendChild(content); // 연습하기
+// 필요 데이터
+// const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
+// const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
+// 라우터까지 진행
 // const containter = document.getElementById('root');
 // const ajax = new XMLHttpRequest();
 // const content = document.createElement('div');
 // const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
 // const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
-// ajax.open('GET', NEWS_URL, false);
-// ajax.send();
-// const newsFeed = JSON.parse(ajax.response);
-// const ul = document.createElement('ul');
-// window.addEventListener('hashchange', function() {
-//   const id = location.hash.substr(1);
-//   ajax.open('GET', CONTENT_URL.replace('@id', id), false);
+// function getData(url) {
+//   ajax.open('GET', url, false);
 //   ajax.send();
-//   const newsContent = JSON.parse(ajax.response);
-//   const title = document.createElement('h1');
-//   title.innerHTML = newsContent.title;
-//   content.appendChild(title);
-//   console.log(newsContent);
-// });
-// for (let i = 0; i < 10; i++) {
-//   const li = document.createElement('li');
-//   const a = document.createElement('a');
-//   a.href = `#${newsFeed[i].id}`;
-//   a.innerHTML = `${newsFeed[i].title} (${newsFeed[i].comments_count})`;
-//   li.appendChild(a);
-//   ul.appendChild(li);
+//   return JSON.parse(ajax.response);
 // }
-// containter.appendChild(ul);
-// containter.appendChild(content);
+// function newsFeed() {
+//   const newsFeed = getData(NEWS_URL);
+//   const newsList = [];
+//   newsList.push('<ul>');
+//   for (let i = 0; i < 10; i++) {
+//     newsList.push(`
+//       <li>
+//         <a href="#${newsFeed[i].id}">
+//           ${newsFeed[i].title} (${newsFeed[i].comments_count})
+//         </a>
+//       </li>
+//     `);
+//   }
+//   newsList.push('</ul>');
+//   containter.innerHTML = newsList.join('');
+// }
+// function newsDetail() {
+//   const id = location.hash.substr(1);
+//   const newsContent = getData(CONTENT_URL.replace('@id', id));
+//   containter.innerHTML = `
+//     <h1>${newsContent.title}</h1>
+//     <div>
+//       <a href='#'>돌아가기</a>
+//     </div>    
+//   `;
+// }
+// function router() {
+//   const routePath = location.hash;
+//   if (routePath === '') {
+//     newsFeed();
+//   } else {
+//     newsDetail();
+//   }
+// }
+// window.addEventListener('hashchange', router);
+// router();
 },{}],"../../../../opt/homebrew/lib/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
@@ -205,7 +196,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49347" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49408" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
