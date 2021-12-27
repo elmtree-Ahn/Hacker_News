@@ -121,11 +121,15 @@ parcelRequire = (function (modules, cache, entry, globalName) {
 // 필요 데이터
 // const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
 // const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
+// 페이지네이션
 var ajax = new XMLHttpRequest();
 var content = document.createElement('div');
 var container = document.getElementById('root');
 var NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
+var store = {
+  currentPage: 1
+};
 
 function getData(url) {
   ajax.open('GET', url, false);
@@ -134,23 +138,25 @@ function getData(url) {
 }
 
 function newsFeed() {
+  var currentPage = 1;
   var newsFeed = getData(NEWS_URL);
   var newsList = [];
   newsList.push('<ul>');
 
-  for (var i = 0; i < 10; i++) {
-    newsList.push("\n    <li>\n      <a href='#".concat(newsFeed[i].id, "'>\n        ").concat(newsFeed[i].title, "(").concat(newsFeed[i].comments_count, ")\n      </a>\n    </li>\n    "));
+  for (var i = (store.currentPage - 1) * 10; i < store.currentPage * 10; i++) {
+    newsList.push("\n    <li>\n      <a href='#/show/".concat(newsFeed[i].id, "'>\n        ").concat(newsFeed[i].title, "(").concat(newsFeed[i].comments_count, ")\n      </a>\n    </li>\n    "));
   }
 
   newsList.push('</ul>');
+  newsList.push("\n  <div>\n    <a href='#/page/".concat(store.currentPage > 1 ? store.currentPage - 1 : 1, "'>\uC774\uC804\uC73C\uB85C</a>\n    <a href='#/page/").concat(store.currentPage <= 3 ? store.currentPage + 1 : 3, "'>\uB2E4\uC74C\uC73C\uB85C</a>\n  </div>\n  "));
   container.innerHTML = newsList.join('');
 }
 
 function newsDetail() {
-  var id = location.hash.substr(1);
+  var id = location.hash.substr(7);
   var newsContent = getData(CONTENT_URL.replace('@id', id));
   var title = document.createElement('h1');
-  container.innerHTML = "\n  <h1>".concat(newsContent.title, "</h1>\n  <div>\n    <a href='#'>\uBAA9\uB85D\uC73C\uB85C</a>\n  </div>\n  \n  ");
+  container.innerHTML = "\n  <h1>".concat(newsContent.title, "</h1>\n  <div>\n    <a href='#/page/").concat(store.currentPage, "'>\uBAA9\uB85D\uC73C\uB85C</a>\n  </div>\n  \n  ");
   title.innerHTML = newsContent.title;
   content.appendChild(title);
 }
@@ -160,6 +166,9 @@ function router() {
 
   if (routerPath === '') {
     newsFeed();
+  } else if (routerPath.indexOf('#/page/') >= 0) {
+    store.currentPage = Number(routerPath.substr(7));
+    newsFeed();
   } else {
     newsDetail();
   }
@@ -167,45 +176,48 @@ function router() {
 
 window.addEventListener('hashchange', router);
 router(); // 라우터까지 진행
-// const containter = document.getElementById('root');
 // const ajax = new XMLHttpRequest();
 // const content = document.createElement('div');
-// const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json"
-// const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json'
+// const container = document.getElementById('root');
+// const NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
+// const CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
 // function getData(url) {
 //   ajax.open('GET', url, false);
 //   ajax.send();
 //   return JSON.parse(ajax.response);
 // }
 // function newsFeed() {
-//   const newsFeed = getData(NEWS_URL);
+//   const newsFeed = getData(NEWS_URL)
 //   const newsList = [];
 //   newsList.push('<ul>');
-//   for (let i = 0; i < 10; i++) {
+//   for (let i = 0; i < 10; i++) {  
 //     newsList.push(`
-//       <li>
-//         <a href="#${newsFeed[i].id}">
-//           ${newsFeed[i].title} (${newsFeed[i].comments_count})
-//         </a>
-//       </li>
-//     `);
+//     <li>
+//       <a href='#${newsFeed[i].id}'>
+//         ${newsFeed[i].title}(${newsFeed[i].comments_count})
+//       </a>
+//     </li>
+//     `)
 //   }
-//   newsList.push('</ul>');
-//   containter.innerHTML = newsList.join('');
+//   newsList.push('</ul>')
+//   container.innerHTML = newsList.join('');
 // }
 // function newsDetail() {
-//   const id = location.hash.substr(1);
+//   const id = location.hash.substr(1)
 //   const newsContent = getData(CONTENT_URL.replace('@id', id));
-//   containter.innerHTML = `
-//     <h1>${newsContent.title}</h1>
-//     <div>
-//       <a href='#'>돌아가기</a>
-//     </div>    
+//   const title = document.createElement('h1')
+//   container.innerHTML = `
+//   <h1>${newsContent.title}</h1>
+//   <div>
+//     <a href='#'>목록으로</a>
+//   </div>
 //   `;
+//   title.innerHTML = newsContent.title;
+//   content.appendChild(title);
 // }
 // function router() {
-//   const routePath = location.hash;
-//   if (routePath === '') {
+//   const routerPath = location.hash;
+//   if (routerPath === '') {
 //     newsFeed();
 //   } else {
 //     newsDetail();
