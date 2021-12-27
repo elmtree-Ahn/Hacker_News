@@ -126,31 +126,47 @@ var content = document.createElement('div');
 var container = document.getElementById('root');
 var NEWS_URL = "https://api.hnpwa.com/v0/news/1.json";
 var CONTENT_URL = 'https://api.hnpwa.com/v0/item/@id.json';
-ajax.open('GET', NEWS_URL, false);
-ajax.send();
-var newsFeed = JSON.parse(ajax.response);
-var ul = document.createElement('ul');
-window.addEventListener('hashchange', function () {
-  var id = location.hash.substr(1);
-  ajax.open('GET', CONTENT_URL.replace('@id', id), false);
-  ajax.send();
-  var newsContent = JSON.parse(ajax.response);
-  var title = document.createElement('h1');
-  title.innerHTML = newsContent.title;
-  content.appendChild(title);
-});
 
-for (var i = 0; i < 10; i++) {
-  var li = document.createElement('li');
-  var a = document.createElement('a');
-  a.innerHTML = "".concat(newsFeed[i].title, "(").concat(newsFeed[i].comments_count, ")");
-  a.href = "#".concat(newsFeed[i].id);
-  li.appendChild(a);
-  ul.appendChild(li);
+function getData(url) {
+  ajax.open('GET', url, false);
+  ajax.send();
+  return JSON.parse(ajax.response);
 }
 
-container.appendChild(ul);
-container.appendChild(content); // 라우터까지 진행
+function newsFeed() {
+  var newsFeed = getData(NEWS_URL);
+  var newsList = [];
+  newsList.push('<ul>');
+
+  for (var i = 0; i < 10; i++) {
+    newsList.push("\n    <li>\n      <a href='#".concat(newsFeed[i].id, "'>\n        ").concat(newsFeed[i].title, "(").concat(newsFeed[i].comments_count, ")\n      </a>\n    </li>\n    "));
+  }
+
+  newsList.push('</ul>');
+  container.innerHTML = newsList.join('');
+}
+
+function newsDetail() {
+  var id = location.hash.substr(1);
+  var newsContent = getData(CONTENT_URL.replace('@id', id));
+  var title = document.createElement('h1');
+  container.innerHTML = "\n  <h1>".concat(newsContent.title, "</h1>\n  <div>\n    <a href='#'>\uBAA9\uB85D\uC73C\uB85C</a>\n  </div>\n  \n  ");
+  title.innerHTML = newsContent.title;
+  content.appendChild(title);
+}
+
+function router() {
+  var routerPath = location.hash;
+
+  if (routerPath === '') {
+    newsFeed();
+  } else {
+    newsDetail();
+  }
+}
+
+window.addEventListener('hashchange', router);
+router(); // 라우터까지 진행
 // const containter = document.getElementById('root');
 // const ajax = new XMLHttpRequest();
 // const content = document.createElement('div');
@@ -225,7 +241,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49404" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49237" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
